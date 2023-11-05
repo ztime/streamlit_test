@@ -1,24 +1,28 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 from scipy import stats
 import plotly.express as px
+import os
+
+file_source_prefix = os.environ.get("FILE_SOURCE_PREFIX")
+if file_source_prefix is None:
+    file_source_prefix = ""
 
 @st.cache_data
 def load_dropdown_data():
-    ids_and_albums = pd.read_csv('artist_to_id.csv')
+    ids_and_albums = pd.read_csv(f'{file_source_prefix}artist_to_id.csv')
     artist_name_list = ids_and_albums['artist_name'].tolist()
     mapping_album_id = ids_and_albums.set_index('artist_name').to_dict()['album_id']
     return artist_name_list, mapping_album_id
 
 @st.cache_data
 def load_all_ratings():
-    all_ratings = pd.read_csv('rating_events.csv')
+    all_ratings = pd.read_csv(f'{file_source_prefix}rating_events.csv')
     return all_ratings
 
 @st.cache_data
 def load_all_albums():
-    all_albums = pd.read_csv('top_500_albums.csv')
+    all_albums = pd.read_csv(f'{file_source_prefix}top_500_albums.csv')
     return all_albums
 
 def load_albums_ratings(album_1_id, album_2_id):
